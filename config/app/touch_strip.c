@@ -24,6 +24,10 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #define HWHEEL_RIGHT 1
 #define HWHEEL_LEFT (-1)
 
+#ifndef ABS
+#define ABS(x) ((x) < 0 ? -(x) : (x))
+#endif
+
 enum ts_state { TS_IDLE, TS_TOUCHING, TS_MOMENTUM };
 
 struct ts_data {
@@ -168,7 +172,7 @@ void touch_strip_press(uint8_t sensor)
 		ts.position = new_pos;
 		ts.last_time = now;
 
-		if (abs(new_pos - (int16_t)(ts.start_sensor * FP_ONE)) > FP_ONE) {
+		if (ABS(new_pos - (int16_t)(ts.start_sensor * FP_ONE)) > FP_ONE) {
 			ts.moved = true;
 		}
 
@@ -201,7 +205,7 @@ void touch_strip_release(uint8_t sensor)
 			ts.state = TS_IDLE;
 		}
 #ifdef CONFIG_HW75_TOUCH_STRIP_MOMENTUM
-		else if (abs(ts.velocity) > FP_ONE) {
+		else if (ABS(ts.velocity) > FP_ONE) {
 			ts.momentum_vel = ts.velocity;
 			ts.state = TS_MOMENTUM;
 			LOG_DBG("Momentum start, vel=%d", ts.momentum_vel);
