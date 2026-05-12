@@ -82,7 +82,7 @@ jobs:
       - name: Archive
         uses: actions/upload-artifact@v7.0.1
         with:
-          name: firmware
+          name: firmware-${{ matrix.board }}
           path: build/artifacts
 
   release:
@@ -98,8 +98,8 @@ jobs:
       - name: Download artifacts
         uses: actions/download-artifact@v3
         with:
-          name: firmware
           path: firmware
+          pattern: firmware-*
 
       - name: Prepare release notes
         id: release
@@ -109,10 +109,15 @@ jobs:
           sed 's/{{TAG}}/${{ github.ref_name }}/g' .github/RELEASE_TEMPLATE.md >> $GITHUB_OUTPUT
           echo "$EOF" >> $GITHUB_OUTPUT
 
+      - name: Merge artifacts
+        run: |
+          mkdir -p firmware_out
+          find firmware -type f \( -name "*.uf2" -o -name "*.hex" -o -name "*.bin" \) -exec cp {} firmware_out/ \;
+
       - name: Publish release
         uses: svenstaro/upload-release-action@v2
         with:
-          file: firmware/*
+          file: firmware_out/*
           file_glob: true
           tag: ${{ github.ref }}
           repo_token: ${{ secrets.GITHUB_TOKEN }}
