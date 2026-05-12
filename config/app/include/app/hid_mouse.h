@@ -8,3 +8,4 @@
 #include <stdbool.h>
 
 int hid_mouse_wheel_report(int direction, bool pressed);
+int hid_mouse_hwheel_report(int direction, bool pressed);

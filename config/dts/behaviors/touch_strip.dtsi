@@ -1,0 +1,14 @@
+/*
+ * Copyright (c) 2022-2023 XiNGRZ
+ * SPDX-License-Identifier: MIT
+ */
+
+/ {
+	behaviors {
+		/omit-if-no-ref/ ts: behavior_touch_strip {
+			compatible = "zmk,behavior-touch-strip";
+			label = "TOUCH_STRIP";
+			#binding-cells = <1>;
+		};
+	};
+};

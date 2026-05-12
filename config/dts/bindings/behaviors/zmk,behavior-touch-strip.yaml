@@ -1,0 +1,8 @@
+# Copyright (c) 2022-2023 XiNGRZ
+# SPDX-License-Identifier: MIT
+
+description: Touch strip sensor behavior
+
+compatible: "zmk,behavior-touch-strip"
+
+include: one_param.yaml

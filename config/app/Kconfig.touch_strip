@@ -1,0 +1,30 @@
+# Copyright (c) 2022-2023 XiNGRZ
+# SPDX-License-Identifier: MIT
+
+config HW75_TOUCH_STRIP
+	bool "Touch strip gesture processing"
+	default y
+
+if HW75_TOUCH_STRIP
+
+config HW75_TOUCH_STRIP_TAP_MS
+	int "Maximum tap duration in milliseconds"
+	default 150
+
+config HW75_TOUCH_STRIP_MOMENTUM
+	bool "Enable momentum scrolling after release"
+	default y
+
+config HW75_TOUCH_STRIP_MOMENTUM_DECAY
+	int "Momentum decay percentage per tick (0-100)"
+	default 85
+
+config HW75_TOUCH_STRIP_MOMENTUM_TICK_MS
+	int "Momentum update interval in milliseconds"
+	default 30
+
+config HW75_TOUCH_STRIP_SCROLL_SCALE
+	int "Scroll sensitivity (256/scale = sensor units per scroll tick)"
+	default 3
+
+endif # HW75_TOUCH_STRIP
