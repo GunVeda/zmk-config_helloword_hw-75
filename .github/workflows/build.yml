@@ -57,6 +57,7 @@ jobs:
           west update
           west zephyr-export
           pip install --break-system-packages -r zephyr/scripts/requirements.txt
+          pip install --break-system-packages 'protobuf>=4.21,<5.0'
           git config --global --add safe.directory $PWD
 
       - name: West build
