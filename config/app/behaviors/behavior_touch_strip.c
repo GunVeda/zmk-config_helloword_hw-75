@@ -19,6 +19,7 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 static int on_keymap_binding_pressed(struct zmk_behavior_binding *binding,
 				     struct zmk_behavior_binding_event event)
 {
+	LOG_INF("Touch strip press sensor %d", binding->param1);
 	touch_strip_press(binding->param1);
 	return 0;
 }
@@ -26,6 +27,7 @@ static int on_keymap_binding_pressed(struct zmk_behavior_binding *binding,
 static int on_keymap_binding_released(struct zmk_behavior_binding *binding,
 				      struct zmk_behavior_binding_event event)
 {
+	LOG_INF("Touch strip release sensor %d", binding->param1);
 	touch_strip_release(binding->param1);
 	return 0;
 }
