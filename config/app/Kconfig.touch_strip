@@ -3,7 +3,6 @@
 
 config HW75_TOUCH_STRIP
 	bool "Touch strip gesture processing"
-	depends on HW75_HID_MOUSE
 	default y
 
 if HW75_TOUCH_STRIP

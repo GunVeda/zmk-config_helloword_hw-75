@@ -13,7 +13,7 @@ zephyr_library_sources(behaviors/behavior_mouse_wheel.c)
 add_subdirectory_ifdef(CONFIG_HW75_USB_COMM usb_comm)
 
 zephyr_library_sources_ifdef(CONFIG_HW75_TOUCH_STRIP touch_strip.c)
-zephyr_library_sources(behaviors/behavior_touch_strip.c)
+zephyr_library_sources_ifdef(CONFIG_HW75_TOUCH_STRIP behaviors/behavior_touch_strip.c)
 
 zephyr_library_include_directories(${ZEPHYR_LVGL_MODULE_DIR})
 zephyr_library_include_directories(${ZEPHYR_BASE}/lib/gui/lvgl)
