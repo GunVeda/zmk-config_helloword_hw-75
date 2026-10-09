@@ -22,6 +22,8 @@ enum Action {
 	RGB_GET_INDICATOR = 10;
 	RGB_SET_INDICATOR = 11;
 	EINK_SET_IMAGE = 7;
+	LAMP_GET_MODE = 12;
+	LAMP_SET_MODE = 13;
 }
 
 message MessageH2D
@@ -38,6 +40,7 @@ message MessageH2D
 		RgbState rgb_state = 7;
 		RgbIndicator rgb_indicator = 8;
 		EinkImage eink_image = 5;
+		LampMode lamp_mode = 10;
 	}
 }
 
@@ -54,6 +57,7 @@ message MessageD2H
 		RgbState rgb_state = 6;
 		RgbIndicator rgb_indicator = 9;
 		EinkImage eink_image = 7;
+		LampMode lamp_mode = 10;
 	}
 }
 
@@ -78,6 +82,7 @@ message Version
 		optional bool knob_prefs = 4;
 		optional bool knob_profile_switch = 7;
 		optional bool knob_spring_report = 8;
+		optional bool lamparray = 9;
 	}
 }
 
@@ -184,4 +189,9 @@ message EinkImage
 	optional uint32 width = 6;
 	optional uint32 height = 7;
 	optional bool partial = 8;
+}
+
+message LampMode
+{
+	required uint32 mode = 1;
 }

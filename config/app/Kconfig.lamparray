@@ -1,0 +1,47 @@
+# Copyright (c) 2022-2023 XiNGRZ
+# SPDX-License-Identifier: MIT
+
+config HW75_LAMPARRAY
+	bool "HID LampArray (Windows Dynamic Lighting)"
+	default n
+	depends on ZMK_RGB_UNDERGLOW
+	depends on USB_DEVICE_HID
+	select HW75_USB_COMM_FEATURE_LAMPARRAY if HW75_USB_COMM
+	help
+	  Expose an additional USB HID interface implementing the Microsoft
+	  HID LampArray usage page (0x59) so that Windows 11 Dynamic Lighting
+	  can drive the LEDs. When the host takes control, the autonomous
+	  ZMK RGB underglow worker and (on hw75_dynamic) the status indicator
+	  are paused so the host has exclusive control of the LEDs.
+
+if HW75_LAMPARRAY
+
+config HW75_LAMPARRAY_DEVICE_NAME
+	string "Name of USB HID device to be used for LampArray"
+	default "HID_2" if BOARD_HW75_KEYBOARD
+	default "HID_3" if BOARD_HW75_DYNAMIC
+
+config HW75_LAMPARRAY_AUTONOMOUS_ON_BOOT
+	bool "Start in autonomous mode on firmware boot"
+	help
+	  When y, the LampArray interface boots in autonomous mode (firmware
+	  controls the LEDs). Windows taking control will still switch into
+	  slave mode. When n, the LampArray boots in slave mode (Windows
+	  controls the LEDs as soon as the host is ready).
+
+config HW75_LAMPARRAY_LOG_LEVEL
+	int "LampArray log level"
+	default 3
+	range 0 4
+
+config HW75_LAMPARRAY_LOG_LEVEL_DBG
+	bool "Debug messages"
+	depends on HW75_LAMPARRAY_LOG_LEVEL
+	default y if LOG_LEVEL_DBG
+
+config USB_HID_DEVICE_COUNT
+	int "Number of HID interfaces (overrides board default)"
+	default 3 if BOARD_HW75_KEYBOARD
+	default 4 if BOARD_HW75_DYNAMIC
+
+endif # HW75_LAMPARRAY

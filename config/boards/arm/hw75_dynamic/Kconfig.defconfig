@@ -14,6 +14,10 @@ config ZMK_KEYBOARD_NAME
 config ZMK_USB
 	default y
 
+config USB_HID_DEVICE_COUNT
+	int
+	default 3
+
 rsource "Kconfig.display"
 rsource "Kconfig.rgb"
 rsource "Kconfig.uf2"

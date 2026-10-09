@@ -18,6 +18,10 @@ choice ZMK_HID_REPORT_TYPE
 	default ZMK_HID_REPORT_TYPE_NKRO
 endchoice
 
+config USB_HID_DEVICE_COUNT
+	int
+	default 2
+
 rsource "Kconfig.rgb"
 rsource "Kconfig.rtt"
 rsource "Kconfig.uf2"
