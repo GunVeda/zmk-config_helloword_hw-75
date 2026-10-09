@@ -33,6 +33,9 @@ static atomic_t slave_mode = ATOMIC_INIT(0);
 static struct led_rgb slave_buffer[HW75_LAMPARRAY_LAMP_COUNT];
 static struct k_spinlock buffer_lock;
 
+static void mode_apply_fn(struct k_work *w);
+static void render_fn(struct k_work *w);
+
 K_WORK_DEFINE(mode_apply_work, mode_apply_fn);
 K_WORK_DEFINE(render_work, render_fn);
 
