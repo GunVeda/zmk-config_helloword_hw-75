@@ -33,9 +33,14 @@ module = HW75_LAMPARRAY
 module-str = lamparray
 source "subsys/logging/Kconfig.template.log_config"
 
-config USB_HID_DEVICE_COUNT
-	int "Number of HID interfaces (overrides board default)"
-	default 3 if BOARD_HW75_KEYBOARD
-	default 4 if BOARD_HW75_DYNAMIC
-
 endif # HW75_LAMPARRAY
+
+# HID interface count. The board's Kconfig.defconfig would otherwise pin this
+# to a fixed value and silently drop our HID_2/HID_3 registration, so we set
+# the default ourselves here, branching on whether LampArray is enabled.
+config USB_HID_DEVICE_COUNT
+	int "Number of HID interfaces"
+	default 3 if (BOARD_HW75_KEYBOARD && HW75_LAMPARRAY)
+	default 4 if (BOARD_HW75_DYNAMIC && HW75_LAMPARRAY)
+	default 2 if BOARD_HW75_KEYBOARD
+	default 3 if BOARD_HW75_DYNAMIC

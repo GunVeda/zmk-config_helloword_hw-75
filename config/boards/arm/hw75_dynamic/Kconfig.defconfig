@@ -14,9 +14,9 @@ config ZMK_KEYBOARD_NAME
 config ZMK_USB
 	default y
 
-config USB_HID_DEVICE_COUNT
-	int
-	default 3
+# USB_HID_DEVICE_COUNT is set in app/Kconfig.lamparray, branching on
+# HW75_LAMPARRAY. Pinning it here would silently override the LampArray
+# value and cause the new HID_3 device to fail to register.
 
 rsource "Kconfig.display"
 rsource "Kconfig.rgb"
