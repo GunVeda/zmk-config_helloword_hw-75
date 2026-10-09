@@ -20,6 +20,8 @@
 #include <zephyr/sys/util.h>
 #include <zephyr/usb/class/usb_hid.h>
 
+#include "lamparray_reports.h"
+
 /* ---- HID usage tags (Microsoft LampArray spec) ---- */
 
 #define HW75_LAMPARRAY_USAGE_PAGE 0x59 /* Lighting and Illumination */

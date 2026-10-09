@@ -7,6 +7,8 @@
 #define APP_LAMPARRAY_H_
 
 #include <stdbool.h>
+#include <stddef.h>
+#include <stdint.h>
 
 /**
  * @brief Switch the LampArray device to "slave" mode.
