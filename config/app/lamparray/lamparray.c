@@ -98,47 +98,47 @@ static void schedule_render(void)
 
 void lamparray_apply_multiupdate(const uint8_t *r, size_t len)
 {
-	if (!r || len < sizeof(struct LampMultiUpdateReportHeader)) {
-		LOG_WRN("lamparray: multiupdate too short (%zu)", len);
+	/*
+	 * Per Microsoft spec, MultiUpdate carries a fixed 8 lamps per
+	 * frame. The host issues ⌈HW75_LAMPARRAY_LAMP_COUNT / 8⌉
+	 * SET_REPORT control transfers; each transfer is self-contained.
+	 */
+	if (!r || len < sizeof(struct LampMultiUpdateReport)) {
+		LOG_WRN("lamparray: multiupdate too short (%zu, need %zu)", len,
+			sizeof(struct LampMultiUpdateReport));
 		return;
 	}
 
-	const struct LampMultiUpdateReportHeader *hdr =
-		(const struct LampMultiUpdateReportHeader *)r;
-	uint8_t count = hdr->LampCount;
-	uint8_t flags = hdr->LampUpdateFlags;
+	const struct LampMultiUpdateReport *rep = (const struct LampMultiUpdateReport *)r;
+	uint8_t count = rep->LampCount;
+	uint8_t flags = rep->LampUpdateFlags;
 
-	if (count > HW75_LAMPARRAY_LAMP_COUNT) {
-		LOG_WRN("lamparray: multiupdate count %u > %d, clamping", count,
-			HW75_LAMPARRAY_LAMP_COUNT);
-		count = HW75_LAMPARRAY_LAMP_COUNT;
-	}
-
-	const size_t need = sizeof(struct LampMultiUpdateReportHeader) +
-			     (size_t)count * sizeof(struct LampMultiUpdateLamp);
-	if (len < need) {
-		LOG_WRN("lamparray: multiupdate short: have %zu need %zu", len, need);
+	if (count == 0) {
 		return;
 	}
-
-	const struct LampMultiUpdateLamp *lumps =
-		(const struct LampMultiUpdateLamp *)(r + sizeof(*hdr));
+	if (count > HW75_LAMPARRAY_MULTI_UPDATE_LAMPS) {
+		LOG_WRN("lamparray: multiupdate count %u > spec max %d, clamping", count,
+			HW75_LAMPARRAY_MULTI_UPDATE_LAMPS);
+		count = HW75_LAMPARRAY_MULTI_UPDATE_LAMPS;
+	}
 
 	k_spinlock_key_t key = k_spin_lock(&buffer_lock);
 	for (uint8_t i = 0; i < count; i++) {
-		uint16_t id = lumps[i].LampId;
+		uint16_t id = rep->LampId[i];
 		if (id >= HW75_LAMPARRAY_LAMP_COUNT) {
 			continue;
 		}
 		struct led_rgb *d = &slave_buffer[id];
+		/* Channels are stored lamp-major: lamp0 R, G, B, I, lamp1 R, ... */
+		const uint8_t *c = &rep->Channels[i * 4];
 		if (flags & LAMPARRAY_UPDATE_FLAG_RED) {
-			d->r = lumps[i].RedUpdateChannel;
+			d->r = c[0];
 		}
 		if (flags & LAMPARRAY_UPDATE_FLAG_GREEN) {
-			d->g = lumps[i].GreenUpdateChannel;
+			d->g = c[1];
 		}
 		if (flags & LAMPARRAY_UPDATE_FLAG_BLUE) {
-			d->b = lumps[i].BlueUpdateChannel;
+			d->b = c[2];
 		}
 		/* Intensity is dropped — WS2812 has no separate intensity channel. */
 	}
