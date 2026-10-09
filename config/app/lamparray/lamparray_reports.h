@@ -14,8 +14,6 @@
 
 #include <stdint.h>
 
-#include <zephyr/sys/util.h> /* for __packed */
-
 /* LampArrayKind enum values from the LampArray spec. */
 enum LampArrayKind
 {
@@ -72,14 +70,14 @@ struct LampArrayAttributesReport
 	uint32_t BoundingBoxDepthInMicrometers;
 	uint32_t LampArrayKind;
 	uint32_t MinUpdateIntervalInMicroseconds;
-} __packed;
+} __attribute__((packed));
 
 /* Report #2: LampAttributesRequestReport (host -> device). */
 struct LampAttributesRequestReport
 {
 	uint8_t ReportId;
 	uint16_t LampId;
-} __packed;
+} __attribute__((packed));
 
 /* Report #3: LampAttributesResponseReport (device -> host, get only). */
 struct LampAttributesResponseReport
@@ -97,7 +95,7 @@ struct LampAttributesResponseReport
 	uint8_t IntensityLevelCount;
 	uint8_t IsProgrammable;
 	uint8_t InputBinding;
-} __packed;
+} __attribute__((packed));
 
 /* Report #4: LampMultiUpdateReport (host -> device).
  *
@@ -108,7 +106,7 @@ struct LampMultiUpdateReportHeader
 	uint8_t ReportId;
 	uint8_t LampCount;
 	uint8_t LampUpdateFlags;
-} __packed;
+} __attribute__((packed));
 
 /* One lamp entry within a MultiUpdate. */
 struct LampMultiUpdateLamp
@@ -118,7 +116,7 @@ struct LampMultiUpdateLamp
 	uint8_t GreenUpdateChannel;
 	uint8_t BlueUpdateChannel;
 	uint8_t IntensityUpdateChannel;
-} __packed;
+} __attribute__((packed));
 
 /* Report #5: LampRangeUpdateReport (host -> device). */
 struct LampRangeUpdateReport
@@ -131,13 +129,13 @@ struct LampRangeUpdateReport
 	uint8_t GreenUpdateChannel;
 	uint8_t BlueUpdateChannel;
 	uint8_t IntensityUpdateChannel;
-} __packed;
+} __attribute__((packed));
 
 /* Report #6: LampArrayControlReport (host -> device). */
 struct LampArrayControlReport
 {
 	uint8_t ReportId;
 	uint8_t AutonomousMode;
-} __packed;
+} __attribute__((packed));
 
 #endif /* HW75_LAMPARRAY_REPORTS_H_ */
