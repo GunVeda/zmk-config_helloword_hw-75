@@ -11,12 +11,17 @@ jobs:
       image: zmkfirmware/zmk-build-arm:stable
 
     strategy:
+      fail-fast: false
       matrix:
         include:
-          - { board: hw75_keyboard@1.1, keymap: hw75_keyboard.keymap  }
-          - { board: hw75_keyboard@1.2, keymap: hw75_keyboard.keymap  }
-          - { board: hw75_dynamic@A,    keymap: hw75_dynamic.keymap   }
-          - { board: hw75_dynamic@B,    keymap: hw75_dynamic.keymap   }
+          - { board: hw75_keyboard@1.1, keymap: hw75_keyboard.keymap, lamparray: false }
+          - { board: hw75_keyboard@1.1, keymap: hw75_keyboard.keymap, lamparray: true  }
+          - { board: hw75_keyboard@1.2, keymap: hw75_keyboard.keymap, lamparray: false }
+          - { board: hw75_keyboard@1.2, keymap: hw75_keyboard.keymap, lamparray: true  }
+          - { board: hw75_dynamic@A,    keymap: hw75_dynamic.keymap,  lamparray: false }
+          - { board: hw75_dynamic@A,    keymap: hw75_dynamic.keymap,  lamparray: true  }
+          - { board: hw75_dynamic@B,    keymap: hw75_dynamic.keymap,  lamparray: false }
+          - { board: hw75_dynamic@B,    keymap: hw75_dynamic.keymap,  lamparray: true  }
 
     steps:
       - name: Prepare variables
@@ -62,27 +67,36 @@ jobs:
 
       - name: West build
         run: |
+          LAMPA_FLAGS=""
+          if [ "${{ matrix.lamparray }}" = "true" ]; then
+            LAMPA_FLAGS="-DCONFIG_HW75_LAMPARRAY=y"
+          fi
           west build -s zmk/app -b ${{ matrix.board }} -- \
             -DZMK_CONFIG=${GITHUB_WORKSPACE}/config \
-            -DKEYMAP_FILE=${GITHUB_WORKSPACE}/config/${{ matrix.keymap }}
+            -DKEYMAP_FILE=${GITHUB_WORKSPACE}/config/${{ matrix.keymap }} \
+            $LAMPA_FLAGS
         env:
           PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION: python
 
       - name: Rename artifacts
         run: |
+          LAMPA_SUFFIX=""
+          if [ "${{ matrix.lamparray }}" = "true" ]; then
+            LAMPA_SUFFIX="-lamparray"
+          fi
           mkdir build/artifacts
           if [ -f build/zephyr/zmk.uf2 ]; then
-            cp build/zephyr/zmk.uf2 "build/artifacts/${{ matrix.board }}-zmk.uf2"
+            cp build/zephyr/zmk.uf2 "build/artifacts/${{ matrix.board }}${LAMPA_SUFFIX}-zmk.uf2"
           fi
           if [ -f build/zephyr/zmk.hex ]; then
-            cp build/zephyr/zmk.hex "build/artifacts/${{ matrix.board }}-zmk.hex"
+            cp build/zephyr/zmk.hex "build/artifacts/${{ matrix.board }}${LAMPA_SUFFIX}-zmk.hex"
           fi
-          cp build/zephyr/zmk.bin "build/artifacts/${{ matrix.board }}-zmk.bin"
+          cp build/zephyr/zmk.bin "build/artifacts/${{ matrix.board }}${LAMPA_SUFFIX}-zmk.bin"
 
       - name: Archive
         uses: actions/upload-artifact@v7.0.1
         with:
-          name: firmware-${{ matrix.board }}
+          name: firmware-${{ matrix.board }}${{ matrix.lamparray == 'true' && '-lamparray' || '' }}
           path: build/artifacts
 
   release:
