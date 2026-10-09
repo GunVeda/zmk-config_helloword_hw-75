@@ -14,6 +14,8 @@
 
 #include <stdint.h>
 
+#include <zephyr/sys/util.h> /* for __packed */
+
 /* LampArrayKind enum values from the LampArray spec. */
 enum LampArrayKind
 {

@@ -75,6 +75,16 @@
 #define HID_LAMPARRAY_FEATURE_DATA_VAR     0x02 /* Data | Variable | Absolute */
 #define HID_LAMPARRAY_FEATURE_CONST_VAR    0x03 /* Constant | Variable | Absolute */
 
+/*
+ * 2-byte Report Count: HID spec requires a long item when the count
+ * exceeds 255. The header byte is (tag << 4) | (type << 2) | size, where
+ * size = 2 for a 2-byte data payload. Zephyr's HID_REPORT_COUNT macro
+ * only emits 1-byte counts, so we hand-roll the 2-byte form here.
+ */
+#define HID_LAMPARRAY_REPORT_COUNT_2BYTE(c)                                                  \
+	HID_ITEM(HID_ITEM_TAG_REPORT_COUNT, HID_ITEM_TYPE_GLOBAL, 2),                          \
+		(uint8_t)((c) & 0xFF), (uint8_t)(((c) >> 8) & 0xFF)
+
 /* Helper: one entry in the MultiUpdate lamp list. */
 #define HW75_LAMPARRAY_LAMP_ENTRY(_, __)                                                  \
 	HID_USAGE(HW75_LAMPARRAY_USAGE_RED_UPDT),                                            \
@@ -223,12 +233,15 @@ static const uint8_t hw75_lamparray_report_desc[] = {
 	HID_REPORT_COUNT(HW75_LAMPARRAY_LAMP_COUNT * 2),
 	HID_FEATURE(HID_LAMPARRAY_FEATURE_DATA_VAR),
 
-	/* Per-lamp update channels (HW75_LAMPARRAY_LAMP_COUNT × {R,G,B,Intensity} u8 each) */
+	/* Per-lamp update channels (HW75_LAMPARRAY_LAMP_COUNT × {R,G,B,Intensity} u8 each).
+	 * HW75_LAMPARRAY_LAMP_COUNT * 4 can exceed 255 on the keyboard (101 lamps,
+	 * 404 channels) so the count is emitted as a 2-byte long item.
+	 */
 	LISTIFY(HW75_LAMPARRAY_LAMP_COUNT, HW75_LAMPARRAY_LAMP_ENTRY, (,)),
 	HID_LOGICAL_MIN8(0x00),
 	HID_LOGICAL_MAX8(0xFF),
 	HID_REPORT_SIZE(8),
-	HID_REPORT_COUNT(HW75_LAMPARRAY_LAMP_COUNT * 4),
+	HID_LAMPARRAY_REPORT_COUNT_2BYTE(HW75_LAMPARRAY_LAMP_COUNT * 4),
 	HID_FEATURE(HID_LAMPARRAY_FEATURE_DATA_VAR),
 
 	HID_LAMPARRAY_END_COLLECTION,
