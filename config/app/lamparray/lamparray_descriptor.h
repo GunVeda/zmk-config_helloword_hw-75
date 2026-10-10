@@ -90,7 +90,20 @@
 #define HID_LAMPARRAY_LOGICAL_MAX8_FF  0x26, 0xFF, 0x00
 #define HID_LAMPARRAY_LOGICAL_MAX8_X(x) 0x25, (x)
 
-static const uint8_t hw75_lamparray_report_desc[] = {
+/*
+ * IMPORTANT: this descriptor is `static` (not `static const`) and lives in
+ * `.data` (RAM) on purpose. The Zephyr USB HID class driver serves the
+ * descriptor from the registered pointer on every GET_DESCRIPTOR
+ * (HID_REPORT) control transfer. With `const` it sits in `.rodata`
+ * (flash), and the 297-byte LampArray descriptor — too large for a
+ * single full-speed USB packet — has been observed to fail to be
+ * served at runtime even though the .uf2 contains the right bytes
+ * and the Configuration Descriptor reports the correct
+ * wReportDescriptorLength. Forcing the array into RAM avoids any
+ * flash-access / cache-coherency path on STM32 and makes the bytes
+ * reliably visible to the USB control-transfer handler.
+ */
+static uint8_t hw75_lamparray_report_desc[] __attribute__((used)) = {
 	/* Usage Page (Lighting And Illumination) */
 	HID_USAGE_PAGE(HW75_LAMPARRAY_USAGE_PAGE),
 	HID_USAGE(HW75_LAMPARRAY_USAGE),
