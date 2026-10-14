@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="CMakeProjectFlavorService">
+    <option name="flavorId" value="CMakePlainProjectFlavor" />
+  </component>
+  <component name="CMakeSettings">
+    <configurations>
+      <configuration PROFILE_NAME="Debug" ENABLED="true" CONFIG_NAME="Debug" />
+    </configurations>
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="5220ba1b-17ad-47c8-96ce-8e430006462d" name="更改" comment="feat(touch_strip): 添加触摸条驱动和相关配置&#10;&#10;- 实现了触摸条行为驱动，支持触摸事件处理&#10;- 添加了触摸条硬件配置文件，包括RGB设置和USB设备配置&#10;- 实现了完整的触摸条功能，包括位置跟踪、滚动计算和动量检测&#10;- 集成了鼠标滚轮报告功能，支持水平滚动&#10;- 实现了轻拍检测和动量滚动效果&#10;- 添加了工作队列处理动量滚动逻辑" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="MacroExpansionManager">
+    <option name="directoryName" value="c3SsL848" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 2
+}</component>
+  <component name="ProjectId" id="3DZTQstWUSZo7SOCtFvgRLSfTnM" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+    <option name="showVisibilityIcons" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "CidrDebugProfileConversion": "true",
+    "RunOnceActivity.RadMigrateCodeStyle": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.cidr.known.project.marker": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.readMode.enableVisualFormatting": "true",
+    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
+    "cf.advertisement.text.overridden": "true",
+    "cf.first.check.clang-format": "false",
+    "cidr.known.project.marker": "true",
+    "codeWithMe.voiceChat.enabledByDefault": "false",
+    "git-widget-placeholder": "master",
+    "last_opened_file_path": "F:/Projects/CLionProjects/zmk-config_helloword_hw-75",
+    "nodejs_package_manager_path": "npm",
+    "org.rust.first.attach.projects": "true",
+    "python.packages.toolwindow.project.migrated.to.right.top.v2": "true",
+    "settings.editor.selected.configurable": "terminal",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="F:\Projects\CLionProjects\zmk-config_helloword_hw-75" />
+    </key>
+  </component>
+  <component name="RustProjectSettings">
+    <option name="toolchainHomeDirectory" value="$PROJECT_DIR$/../../../Repository/CargoRepository/bin" />
+  </component>
+  <component name="SelectedDebugProfileService"><![CDATA[{
+  "profileIdByStamp": [],
+  "modificationCount": 1
+}]]></component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="默认任务">
+      <changelist id="5220ba1b-17ad-47c8-96ce-8e430006462d" name="更改" comment="" />
+      <created>1778488578861</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1778488578861</updated>
+      <workItem from="1778488579919" duration="22510000" />
+    </task>
+    <task id="LOCAL-00001" summary="feat(keyboard): 添加 hw75 键盘配置文件&#10;&#10;- 定义了基础层、功能层、触摸层和窗口锁定层的按键映射&#10;- 配置了完整的 74 行键盘布局，包括 F 键区、主键盘区和方向键区&#10;- 实现了多媒体控制键和 RGB 灯效控制功能&#10;- 设置了触摸滑块行为和长按触发机制&#10;- 添加了 Windows 锁定功能以防止误触 Win 键">
+      <option name="closed" value="true" />
+      <created>1778546729593</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1778546729593</updated>
+    </task>
+    <task id="LOCAL-00002" summary="chore(workflow): 更新 GitHub Actions 缓存依赖版本&#10;&#10;- 将 actions/cache 从 v3.0.11 升级到 v4.0.0&#10;- 保持缓存配置和错误处理设置不变">
+      <option name="closed" value="true" />
+      <created>1778547049295</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1778547049295</updated>
+    </task>
+    <task id="LOCAL-00003" summary="chore(workflow): 更新 GitHub Actions 缓存依赖版本&#10;&#10;- 将 actions/cache 从 v4.0.0 升级到 v6.0.1&#10;- 保持缓存配置和错误处理设置不变">
+      <option name="closed" value="true" />
+      <created>1778547211588</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1778547211588</updated>
+    </task>
+    <task id="LOCAL-00004" summary="chore(workflow): 更新 GitHub Actions 缓存依赖版本&#10;&#10;- 将 actions/cache 从 v6.0.1 降级到 v5.0.5&#10;- 保持缓存配置和其他工作流设置不变">
+      <option name="closed" value="true" />
+      <created>1778547274989</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1778547274989</updated>
+    </task>
+    <task id="LOCAL-00005" summary="chore(workflow): 更新 GitHub Actions 缓存依赖版本&#10;&#10;- 将 actions/cache 从 v6.0.1 降级到 v5.0.5&#10;- 保持缓存配置和其他工作流设置不变">
+      <option name="closed" value="true" />
+      <created>1778547484628</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1778547484628</updated>
+    </task>
+    <task id="LOCAL-00006" summary="fix(build): 修复依赖安装问题&#10;&#10;- 在fonttools安装命令中添加--break-system-packages参数&#10;- 在zephyr requirements安装命令中添加--break-system-packages参数&#10;- 解决因系统包管理冲突导致的构建失败问题">
+      <option name="closed" value="true" />
+      <created>1778547629518</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1778547629518</updated>
+    </task>
+    <task id="LOCAL-00007" summary="build(workflow): 为构建工作流添加 protobuf 依赖&#10;&#10;- 在 build.yml 工作流中添加 protobuf 依赖安装命令&#10;- 指定 protobuf 版本范围为 &gt;=4.21 且 &lt;5.0&#10;- 使用 --break-system-packages 参数避免系统包冲突">
+      <option name="closed" value="true" />
+      <created>1778548847244</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1778548847244</updated>
+    </task>
+    <task id="LOCAL-00008" summary="feat(build): 支持多板型固件构建和发布&#10;&#10;- 修改固件归档名称为 firmware-${{ matrix.board }} 格式&#10;- 更新下载步骤使用 pattern: firmware-* 匹配所有固件文件&#10;- 添加合并固件文件到统一目录的步骤&#10;- 更新发布步骤指向新的固件输出目录 firmware_out/*">
+      <option name="closed" value="true" />
+      <created>1778549313794</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1778549313794</updated>
+    </task>
+    <task id="LOCAL-00009" summary="feat(touch): 添加触摸条手势处理功能&#10;&#10;- 实现触摸条传感器驱动程序支持手势识别&#10;- 添加水平滚轮滚动功能支持触摸条滑动&#10;- 集成点击检测逻辑实现区域划分响应&#10;- 实现动量滚动效果提升用户体验&#10;- 添加触摸条行为配置选项和参数设置&#10;- 配置触摸条在键盘映射中的绑定使用">
+      <option name="closed" value="true" />
+      <created>1778561540096</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1778561540096</updated>
+    </task>
+    <task id="LOCAL-00010" summary="feat(touch_strip): 添加触摸条手势处理功能&#10;&#10;- 实现触摸条传感器位置跟踪和手势识别&#10;- 添加点击检测和左右区域音量控制功能&#10;- 实现触摸滚动和惯性滚动效果&#10;- 添加速度计算和滚动灵敏度配置&#10;- 集成到HID鼠标水平滚轮报告系统&#10;- 提供可配置的滚动参数和时间间隔设置">
+      <option name="closed" value="true" />
+      <created>1778562018738</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1778562018738</updated>
+    </task>
+    <task id="LOCAL-00011" summary="feat(touch_strip): 添加触摸条手势处理功能&#10;&#10;- 实现触摸条传感器位置跟踪和手势识别&#10;- 添加点击检测和左右区域音量控制功能&#10;- 实现触摸滚动和惯性滚动效果&#10;- 添加速度计算和滚动灵敏度配置&#10;- 集成到HID鼠标水平滚轮报告系统&#10;- 提供可配置的滚动参数和时间间隔设置">
+      <option name="closed" value="true" />
+      <created>1778563668214</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1778563668214</updated>
+    </task>
+    <task id="LOCAL-00012" summary="feat(hw75): 添加键盘配置文件&#10;&#10;- 配置 STM32F103XB 系列微控制器&#10;- 设置 RGB 底部发光功能参数&#10;- 配置存储系统包括 FLASH 和 NVS&#10;- 设置 USB 设备制造商和产品名称&#10;- 配置双 HID 设备支持键盘和鼠标&#10;- 定义堆内存池大小和系统分区设置">
+      <option name="closed" value="true" />
+      <created>1778564827263</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1778564827264</updated>
+    </task>
+    <task id="LOCAL-00013" summary="feat(touch_strip): 添加触摸条驱动和相关配置&#10;&#10;- 实现了触摸条行为驱动，支持触摸事件处理&#10;- 添加了触摸条硬件配置文件，包括RGB设置和USB设备配置&#10;- 实现了完整的触摸条功能，包括位置跟踪、滚动计算和动量检测&#10;- 集成了鼠标滚轮报告功能，支持水平滚动&#10;- 实现了轻拍检测和动量滚动效果&#10;- 添加了工作队列处理动量滚动逻辑">
+      <option name="closed" value="true" />
+      <created>1778567578195</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1778567578195</updated>
+    </task>
+    <option name="localTasksCounter" value="14" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="feat(keyboard): 添加 hw75 键盘配置文件&#10;&#10;- 定义了基础层、功能层、触摸层和窗口锁定层的按键映射&#10;- 配置了完整的 74 行键盘布局，包括 F 键区、主键盘区和方向键区&#10;- 实现了多媒体控制键和 RGB 灯效控制功能&#10;- 设置了触摸滑块行为和长按触发机制&#10;- 添加了 Windows 锁定功能以防止误触 Win 键" />
+    <MESSAGE value="chore(workflow): 更新 GitHub Actions 缓存依赖版本&#10;&#10;- 将 actions/cache 从 v3.0.11 升级到 v4.0.0&#10;- 保持缓存配置和错误处理设置不变" />
+    <MESSAGE value="chore(workflow): 更新 GitHub Actions 缓存依赖版本&#10;&#10;- 将 actions/cache 从 v4.0.0 升级到 v6.0.1&#10;- 保持缓存配置和错误处理设置不变" />
+    <MESSAGE value="chore(workflow): 更新 GitHub Actions 缓存依赖版本&#10;&#10;- 将 actions/cache 从 v6.0.1 降级到 v5.0.5&#10;- 保持缓存配置和其他工作流设置不变" />
+    <MESSAGE value="fix(build): 修复依赖安装问题&#10;&#10;- 在fonttools安装命令中添加--break-system-packages参数&#10;- 在zephyr requirements安装命令中添加--break-system-packages参数&#10;- 解决因系统包管理冲突导致的构建失败问题" />
+    <MESSAGE value="build(workflow): 为构建工作流添加 protobuf 依赖&#10;&#10;- 在 build.yml 工作流中添加 protobuf 依赖安装命令&#10;- 指定 protobuf 版本范围为 &gt;=4.21 且 &lt;5.0&#10;- 使用 --break-system-packages 参数避免系统包冲突" />
+    <MESSAGE value="feat(build): 支持多板型固件构建和发布&#10;&#10;- 修改固件归档名称为 firmware-${{ matrix.board }} 格式&#10;- 更新下载步骤使用 pattern: firmware-* 匹配所有固件文件&#10;- 添加合并固件文件到统一目录的步骤&#10;- 更新发布步骤指向新的固件输出目录 firmware_out/*" />
+    <MESSAGE value="feat(touch): 添加触摸条手势处理功能&#10;&#10;- 实现触摸条传感器驱动程序支持手势识别&#10;- 添加水平滚轮滚动功能支持触摸条滑动&#10;- 集成点击检测逻辑实现区域划分响应&#10;- 实现动量滚动效果提升用户体验&#10;- 添加触摸条行为配置选项和参数设置&#10;- 配置触摸条在键盘映射中的绑定使用" />
+    <MESSAGE value="feat(touch_strip): 添加触摸条手势处理功能&#10;&#10;- 实现触摸条传感器位置跟踪和手势识别&#10;- 添加点击检测和左右区域音量控制功能&#10;- 实现触摸滚动和惯性滚动效果&#10;- 添加速度计算和滚动灵敏度配置&#10;- 集成到HID鼠标水平滚轮报告系统&#10;- 提供可配置的滚动参数和时间间隔设置" />
+    <MESSAGE value="feat(hw75): 添加键盘配置文件&#10;&#10;- 配置 STM32F103XB 系列微控制器&#10;- 设置 RGB 底部发光功能参数&#10;- 配置存储系统包括 FLASH 和 NVS&#10;- 设置 USB 设备制造商和产品名称&#10;- 配置双 HID 设备支持键盘和鼠标&#10;- 定义堆内存池大小和系统分区设置" />
+    <MESSAGE value="feat(touch_strip): 添加触摸条驱动和相关配置&#10;&#10;- 实现了触摸条行为驱动，支持触摸事件处理&#10;- 添加了触摸条硬件配置文件，包括RGB设置和USB设备配置&#10;- 实现了完整的触摸条功能，包括位置跟踪、滚动计算和动量检测&#10;- 集成了鼠标滚轮报告功能，支持水平滚动&#10;- 实现了轻拍检测和动量滚动效果&#10;- 添加了工作队列处理动量滚动逻辑" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat(touch_strip): 添加触摸条驱动和相关配置&#10;&#10;- 实现了触摸条行为驱动，支持触摸事件处理&#10;- 添加了触摸条硬件配置文件，包括RGB设置和USB设备配置&#10;- 实现了完整的触摸条功能，包括位置跟踪、滚动计算和动量检测&#10;- 集成了鼠标滚轮报告功能，支持水平滚动&#10;- 实现了轻拍检测和动量滚动效果&#10;- 添加了工作队列处理动量滚动逻辑" />
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
+  </component>
+</project>

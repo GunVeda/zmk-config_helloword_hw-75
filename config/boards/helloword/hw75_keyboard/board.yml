@@ -13,3 +13,5 @@ board:
       - name: 1.2.0
   socs:
     - name: stm32f103xb
+      variants:
+        - name: zmk

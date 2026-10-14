@@ -12,4 +12,6 @@ board:
       - name: A
       - name: B
   socs:
-    - name: stm32f405xg
+    - name: stm32f405rg
+      variants:
+        - name: zmk

@@ -1,0 +1,3 @@
+zmkx>=0.4.0
+pystray>=1.2.0
+Pillow>=10.0.0
