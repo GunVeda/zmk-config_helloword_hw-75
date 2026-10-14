@@ -10,7 +10,6 @@
 #include <zephyr/device.h>
 #include <zephyr/kernel.h>
 #include <zephyr/sys/util.h>
-#include <zephyr/sys/slist.h>
 
 #include <zephyr/logging/log.h>
 LOG_MODULE_DECLARE(lamparray, CONFIG_HW75_LAMPARRAY_LOG_LEVEL);
@@ -21,59 +20,6 @@ LOG_MODULE_DECLARE(lamparray, CONFIG_HW75_LAMPARRAY_LOG_LEVEL);
 #include "lamparray.h"
 #include "lamparray_descriptor.h"
 #include "lamparray_reports.h"
-
-/*
- * HACK: directly append HID_2 to the HID class driver's lookup list.
- *
- * The pcapng (usb-new-2.pcapng) showed that usb_get_dev_data_by_iface()
- * returns NULL for bInterfaceNumber=2 at host enumeration time, even
- * though the user's lamparray_hid_init calls usb_hid_register_device().
- * MI_00 and MI_01 work on retry (their init functions land in the list
- * during the host's retry window), but MI_02 never does — so the
- * lookup stays NULL and hid_custom_handle_req returns -EINVAL,
- * which makes the device STALL GET_DESCRIPTOR HID_REPORT for MI_02
- * and Windows shows CM_PROB_FAILED_START.
- *
- * The function usb_hid_register_device() in
- * subsys/usb/device/class/hid/core.c is what normally populates
- * usb_hid_devlist. We can't force a different SYS_INIT priority
- * that races correctly (POST_KERNEL/1 bricked the device, APPLICATION
- * races the host's enumeration). So instead, reach in and append the
- * entry directly. The list is a `static sys_slist_t` inside the HID
- * class driver, but its symbol is exported by the linker.
- */
-extern sys_slist_t usb_hid_devlist;
-
-/*
- * Mirror of struct hid_device_info from
- * subsys/usb/device/class/hid/core.c, with the conditional fields
- * (SOF bookkeeping, boot protocol protocol byte) omitted because
- * neither CONFIG_USB_DEVICE_SOF nor CONFIG_USB_HID_BOOT_PROTOCOL
- * is set in this build (we can confirm this from the pcapng: SET_IDLE
- * STALLs on every interface, which is the !SOF behavior). The layout
- * up to and including the inline "common" fields is the same.
- *
- * The lookup in usb_get_dev_data_by_iface() iterates the list and for
- * each node reads dev->config->interface_descriptor->bInterfaceNumber
- * and compares it to the requested iface number. For HID_2 to match
- * the host's request for bInterfaceNumber=2, the entry must be in
- * usb_hid_devlist at lookup time. The struct's "common" portion
- * holds the sys_slist_node (the linked-list link) plus the device
- * pointer used to find the interface descriptor.
- *
- * `struct usb_dev_data` is internal to subsys/usb/device/usb_descriptor.c
- * so we re-declare the two fields inline instead of pulling the type.
- */
-struct fake_hid_device_info {
-	const uint8_t *report_desc;
-	size_t report_size;
-	const struct hid_ops *ops;
-	bool configured;
-	bool suspended;
-	uint8_t _pad[2];
-	sys_slist_node_t common_node;
-	const struct device *common_dev;
-};
 
 static const struct device *hid_dev;
 
@@ -233,23 +179,19 @@ static int lamparray_hid_init(const struct device *dev)
 		hid_dev->name, if_desc->bInterfaceNumber,
 		sizeof(hw75_lamparray_report_desc), cfg);
 
-	/*
-	 * Direct-list-append (HACK) — see the comment at the top of this
-	 * file. Functionally equivalent to usb_hid_register_device():
-	 * set the same fields and append to the same list, just without
-	 * going through the public API. The struct layout is matched by
-	 * struct fake_hid_device_info above. If the lookup for
-	 * bInterfaceNumber=2 still fails after this, the issue is not
-	 * the registration call but something else (the field offsets,
-	 * a different list, or a different code path the host takes).
+	/* Reverted to the public Zephyr API after the direct-list-manipulation
+	 * hack was abandoned — that approach needs to mirror private structs
+	 * (struct usb_dev_data, sys_slist_node_t) with exact field offsets for
+	 * the container_of() math in the lookup to land on the right device
+	 * pointer, and each build kept surfacing a new incompatibility
+	 * (sys_slist_node_t not exposed, usb_dev_data not exposed, field
+	 * alignment mismatches). The real fix needs a Zephyr patch that
+	 * makes the lookup fall back to a static descriptor table when
+	 * usb_hid_devlist is empty for the requested bInterfaceNumber, but
+	 * that's a kernel-side change beyond the userland's reach.
 	 */
-	struct fake_hid_device_info *dev_data = hid_dev->data;
-
-	dev_data->report_desc = hw75_lamparray_report_desc;
-	dev_data->report_size = sizeof(hw75_lamparray_report_desc);
-	dev_data->ops = &ops;
-	dev_data->common_dev = hid_dev;
-	sys_slist_append(&usb_hid_devlist, &dev_data->common_node);
+	usb_hid_register_device(hid_dev, hw75_lamparray_report_desc,
+				sizeof(hw75_lamparray_report_desc), &ops);
 
 	return usb_hid_init(hid_dev);
 }
