@@ -1,0 +1,15 @@
+# Copyright (c) 2022-2023 XiNGRZ
+# SPDX-License-Identifier: MIT
+
+board:
+  name: hw75_dynamic
+  vendor: helloword
+  revision:
+    format: letter
+    default: A
+    exact: false
+    revisions:
+      - name: A
+      - name: B
+  socs:
+    - name: stm32f405xg

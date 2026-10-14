@@ -1,7 +1,0 @@
-identifier: hw75_keyboard
-name: HelloWord HW-75 Keyboard
-type: mcu
-arch: arm
-toolchain:
-  - zephyr
-  - gnuarmemb

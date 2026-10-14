@@ -1,0 +1,7 @@
+# HW-75 board configuration
+
+# Copyright (c) 2022-2023 XiNGRZ
+# SPDX-License-Identifier: MIT
+
+config BOARD_HW75_KEYBOARD
+	select SOC_STM32F103XB

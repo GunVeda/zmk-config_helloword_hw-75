@@ -1,0 +1,28 @@
+# HW-75 board configuration
+
+# Copyright (c) 2022-2023 XiNGRZ
+# SPDX-License-Identifier: MIT
+
+if BOARD_HW75_KEYBOARD
+
+config BOARD
+	default "hw75_keyboard"
+
+config ZMK_KEYBOARD_NAME
+	default "HelloWord HW-75 Keyboard"
+
+config ZMK_USB
+	default y
+
+choice ZMK_HID_REPORT_TYPE
+	default ZMK_HID_REPORT_TYPE_NKRO
+endchoice
+
+rsource "Kconfig.rgb"
+rsource "Kconfig.rtt"
+rsource "Kconfig.uf2"
+rsource "Kconfig.usb"
+
+rsource "app/Kconfig"
+
+endif # BOARD_HW75_KEYBOARD

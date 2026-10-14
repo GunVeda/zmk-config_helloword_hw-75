@@ -1,0 +1,24 @@
+# HW-75 board configuration
+
+# Copyright (c) 2022-2023 XiNGRZ
+# SPDX-License-Identifier: MIT
+
+if BOARD_HW75_DYNAMIC
+
+config BOARD
+	default "hw75_dynamic"
+
+config ZMK_KEYBOARD_NAME
+	default "HelloWord HW-75 Dynamic"
+
+config ZMK_USB
+	default y
+
+rsource "Kconfig.display"
+rsource "Kconfig.rgb"
+rsource "Kconfig.uf2"
+rsource "Kconfig.usb"
+
+rsource "app/Kconfig"
+
+endif # BOARD_HW75_DYNAMIC
