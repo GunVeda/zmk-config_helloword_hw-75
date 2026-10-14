@@ -185,21 +185,22 @@ static int lamparray_hid_init(const struct device *dev)
 }
 
 /*
- * POST_KERNEL priority 1 — strictly LATER than the HID class driver's
- * DEVICE_DEFINE(..., POST_KERNEL, CONFIG_KERNEL_INIT_PRIORITY_DEFAULT).
- * Both priorities are POST_KERNEL, but the HID class devices are at
- * prio 0 and ours is at prio 1, so this init runs after every HID
- * instance struct is created and `device_get_binding("HID_2")` is
- * guaranteed non-NULL.
+ * APPLICATION priority. Originally this was at
+ * CONFIG_APPLICATION_INIT_PRIORITY, but a brief experiment at
+ * POST_KERNEL/1 made the keyboard fail to enumerate at all —
+ * POST_KERNEL/1 runs before HID class DEVICE_DEFINEs (which are
+ * at CONFIG_KERNEL_INIT_PRIORITY_DEFAULT=50), so
+ * device_get_binding("HID_2") returns NULL and the SYS_INIT
+ * returns -ENODEV during kernel bring-up.
  *
- * Critically, this still runs BEFORE ZMK's APPLICATION-priority
- * zmk_usb_hid_init and before the init function that calls
- * usb_enable(), so by the time the host issues its first
- * GET_DESCRIPTOR HID_REPORT for MI_02, HID_2 is already in
- * usb_hid_devlist. The previous APPLICATION-priority placement
- * lost that race; the previous POST_KERNEL/0 placement had the
- * inverse problem of running before the HID class device was even
- * created (Configuration Descriptor then reported
- * wReportDescriptorLength=0 for MI_02).
+ * The race we want to fix (MI_02 GET_DESCRIPTOR HID_REPORT
+ * STALLing on the first try because usb_hid_devlist is empty
+ * for bInterfaceNumber=2 when the host queries it) is real and
+ * is documented in the previous commits' pcapng analyses.
+ * Solving it requires a deeper change to the Zephyr USB stack
+ * (or patching ZMK's usb_enable timing) — the application-level
+ * workaround attempted here was reverted. For now the LampArray
+ * interface enumerates as Code 10 on Windows until the upstream
+ * fix lands.
  */
-SYS_INIT(lamparray_hid_init, POST_KERNEL, 1);
+SYS_INIT(lamparray_hid_init, APPLICATION, CONFIG_APPLICATION_INIT_PRIORITY);
