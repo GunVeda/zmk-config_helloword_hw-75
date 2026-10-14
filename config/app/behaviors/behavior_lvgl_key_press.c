@@ -19,7 +19,6 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #define LVKP_MSGQ_COUNT 10
 K_MSGQ_DEFINE(lvkp_msgq, sizeof(lv_indev_data_t), LVKP_MSGQ_COUNT, 4);
 
-static lv_indev_drv_t indev_drv;
 static lv_indev_t *indev = NULL;
 
 static int on_keymap_binding_pressed(struct zmk_behavior_binding *binding,
@@ -67,7 +66,7 @@ static const struct behavior_driver_api behavior_lvgl_key_press_driver_api = {
 	.binding_released = on_keymap_binding_released
 };
 
-static void indev_read_cb(lv_indev_drv_t *drv, lv_indev_data_t *data)
+static void indev_read_cb(lv_indev_t *drv, lv_indev_data_t *data)
 {
 	ARG_UNUSED(drv);
 
@@ -81,10 +80,9 @@ static void indev_read_cb(lv_indev_drv_t *drv, lv_indev_data_t *data)
 lv_indev_t *behavior_lvgl_get_indev(void)
 {
 	if (!indev) {
-		lv_indev_drv_init(&indev_drv);
-		indev_drv.type = LV_INDEV_TYPE_KEYPAD;
-		indev_drv.read_cb = indev_read_cb;
-		indev = lv_indev_drv_register(&indev_drv);
+		indev = lv_indev_create();
+		lv_indev_set_type(indev, LV_INDEV_TYPE_KEYPAD);
+		lv_indev_set_read_cb(indev, indev_read_cb);
 	}
 
 	return indev;

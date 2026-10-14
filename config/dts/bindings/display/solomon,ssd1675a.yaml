@@ -1,0 +1,52 @@
+# Local override of the upstream Solomon SSD16XX binding.
+#
+# The local ssd16xx.c (config/drivers/display/ssd16xx.c) is a vendored
+# copy of the pre-mipi-dbi driver. It reads width/height/
+# orientation-flipped directly off the node and uses SPI_DT_SPEC_GET(),
+# so it needs the SSD16XX to be a child of a raw SPI bus, not a MIPI-DBI
+# controller.
+#
+# The upstream Zephyr 4.x binding (solomon,ssd16xx-common.yaml) routes
+# SSD16XX through the mipi-dbi bus, which would mean rewriting the
+# driver to talk to mipi-dbi instead of SPI. Instead, override the
+# binding here with the same fields the driver actually reads.
+
+description: Solomon SSD16XX EPD display controller (legacy SPI binding)
+
+compatible: "solomon,ssd1675a"
+
+include: spi-device.yaml, display-controller.yaml
+
+properties:
+  reset-gpios:
+    type: phandle-array
+    required: true
+
+  dc-gpios:
+    type: phandle-array
+    required: true
+
+  busy-gpios:
+    type: phandle-array
+    required: true
+
+  orientation-flipped:
+    type: boolean
+    description: Rotate the panel 180 degrees.
+
+  softstart:
+    type: uint8-array
+    description: Booster soft start values.
+
+  tssv:
+    type: int
+    description: Temperature Sensor Selection Value.
+
+  rotation:
+    type: int
+    default: 0
+    enum:
+      - 0
+      - 90
+      - 180
+      - 270
