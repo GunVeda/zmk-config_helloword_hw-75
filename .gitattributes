@@ -1,0 +1,5 @@
+# Enforce LF line endings for all text files; CRLF was unintentionally
+# introduced by editor tool pastes, and Zephyr's device.h macros use
+# a sizeof(char[1 - 2 * !cond]) trick that surfaces trailing whitespace
+# differences as compile errors.
+* text=auto eol=lf
