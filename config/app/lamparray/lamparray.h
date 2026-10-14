@@ -35,17 +35,6 @@ void lamparray_enter_autonomous(void);
 bool lamparray_is_slave(void);
 
 /**
- * @brief Late-register the LampArray HID device with the Zephyr USB HID
- *        class driver. Call this from mode-apply code (typically
- *        lamparray_enter_slave) so the registration lands AFTER the
- *        USB enumeration race window during SYS_INIT — see the comment
- *        in lamparray_hid.c::lamparray_hid_register_late for details.
- *
- * Idempotent. Safe to call from a work item.
- */
-void lamparray_hid_register_late(void);
-
-/**
  * @brief Parse and apply a LampMultiUpdateReport (Report #4) body.
  *
  * Called from the HID set_report callback. Updates the internal
