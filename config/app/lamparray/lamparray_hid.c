@@ -51,10 +51,18 @@ extern sys_slist_t usb_hid_devlist;
  * neither CONFIG_USB_DEVICE_SOF nor CONFIG_USB_HID_BOOT_PROTOCOL
  * is set in this build (we can confirm this from the pcapng: SET_IDLE
  * STALLs on every interface, which is the !SOF behavior). The layout
- * up to and including `common` is the same.
+ * up to and including the inline "common" fields is the same.
  *
- * We only touch report_desc, report_size, ops, and `common` (node +
- * dev), which is the same set usb_hid_register_device() writes.
+ * The lookup in usb_get_dev_data_by_iface() iterates the list and for
+ * each node reads dev->config->interface_descriptor->bInterfaceNumber
+ * and compares it to the requested iface number. For HID_2 to match
+ * the host's request for bInterfaceNumber=2, the entry must be in
+ * usb_hid_devlist at lookup time. The struct's "common" portion
+ * holds the sys_slist_node (the linked-list link) plus the device
+ * pointer used to find the interface descriptor.
+ *
+ * `struct usb_dev_data` is internal to subsys/usb/device/usb_descriptor.c
+ * so we re-declare the two fields inline instead of pulling the type.
  */
 struct fake_hid_device_info {
 	const uint8_t *report_desc;
@@ -63,7 +71,8 @@ struct fake_hid_device_info {
 	bool configured;
 	bool suspended;
 	uint8_t _pad[2];
-	struct usb_dev_data common;
+	sys_slist_node_t common_node;
+	const struct device *common_dev;
 };
 
 static const struct device *hid_dev;
@@ -239,8 +248,8 @@ static int lamparray_hid_init(const struct device *dev)
 	dev_data->report_desc = hw75_lamparray_report_desc;
 	dev_data->report_size = sizeof(hw75_lamparray_report_desc);
 	dev_data->ops = &ops;
-	dev_data->common.dev = hid_dev;
-	sys_slist_append(&usb_hid_devlist, &dev_data->common.node);
+	dev_data->common_dev = hid_dev;
+	sys_slist_append(&usb_hid_devlist, &dev_data->common_node);
 
 	return usb_hid_init(hid_dev);
 }
