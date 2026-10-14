@@ -5,7 +5,14 @@ zephyr_library_named(hw75_proto)
 
 if(CONFIG_HW75_PROTO)
 
-set(CMAKE_C_STANDARD 11)
+# Nanopb's FindNanopb.cmake (0.4.6-zephyr) calls
+#   target_compile_features(nanopb PUBLIC c_std_11)
+# but CMake's feature list for the arm-none-eabi-gcc cross-compiler
+# does not include c_std_11, so the find_package call fails with
+# "The compiler feature c_std_11 is not known to C compiler GNU 12.2.0".
+# Add c_std_11 to the known features list before find_package.
+list(APPEND CMAKE_C_COMPILE_FEATURES c_std_11)
+
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${ZEPHYR_NANOPB_MODULE_DIR}/extra)
 find_package(Nanopb REQUIRED)
 
