@@ -77,9 +77,9 @@ ZMK_SUBSCRIPTION(layer_status_subscribtion, zmk_layer_state_changed);
 
 static void layer_button_selected(lv_event_t *event)
 {
-	int layer_id = (int)event->user_data;
+	int layer_id = (int)lv_event_get_user_data(event);
 	if (layer_id != zmk_keymap_highest_layer_active()) {
-		zmk_keymap_layer_to((uint8_t)layer_id);
+		zmk_keymap_layer_to(zmk_keymap_layer_index_to_id(layer_id), false);
 	}
 }
 
