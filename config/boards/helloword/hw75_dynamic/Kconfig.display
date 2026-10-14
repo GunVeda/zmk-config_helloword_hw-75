@@ -22,14 +22,3 @@ choice LV_COLOR_DEPTH
 endchoice
 
 endif # ZMK_DISPLAY
-
-if SSD1306
-
-choice SSD1306_CONTROLLER_TYPE
-	default SSD1306_SH1106_COMPATIBLE
-endchoice
-
-config SSD1306_REVERSE_MODE
-	default y
-
-endif # SSD1306
