@@ -29,8 +29,10 @@ static void report_fn_state_changed(bool pressed)
 static int report_fn_state_event_listener(const zmk_event_t *eh)
 {
 	if (as_zmk_layer_state_changed(eh)) {
-		uint8_t index = zmk_keymap_highest_layer_active();
-		bool current = strncmp(zmk_keymap_layer_label(index), "FN", 2) == 0;
+		zmk_keymap_layer_id_t id =
+			zmk_keymap_layer_index_to_id(zmk_keymap_highest_layer_active());
+		const char *name = zmk_keymap_layer_name(id);
+		bool current = name && strncmp(name, "FN", 2) == 0;
 		if (!fn_pressed && current) {
 			report_fn_state_changed(true);
 		} else if (fn_pressed && !current) {

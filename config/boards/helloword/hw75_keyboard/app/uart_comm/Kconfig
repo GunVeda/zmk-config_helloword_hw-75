@@ -1,22 +1,12 @@
 # Copyright (c) 2022-2023 XiNGRZ
 # SPDX-License-Identifier: MIT
 
-DT_ALIAS_UART_COMM := uart-comm
-
 config HW75_UART_COMM
-	bool
-	select SERIAL
+	bool "HW-75 UART companion link (SLIP)"
+	depends on SERIAL
 	select HW75_PROTO_UART_COMM
-	default $(dt_alias_enabled,$(DT_ALIAS_UART_COMM))
-
-if HW75_UART_COMM
-
-config HW75_UART_COMM_MAX_TX_MESSAGE_SIZE
-	int
-	default 64
-
-module = HW75_UART_COMM
-module-str = uart_comm
-source "subsys/logging/Kconfig.template.log_config"
-
-endif # HW75_UART_COMM
+	help
+	  Enable the UART-based companion link used to talk to the host
+	  configuration tool over a SLIP-attached UART. Off by default in
+	  this ZMK 4.x build; enable explicitly if your board's keymap or
+	  companion tooling requires it.
