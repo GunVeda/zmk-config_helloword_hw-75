@@ -1,8 +1,8 @@
 manifest:
   projects:
     - name: zmk
-      url: https://github.com/xingrz/zmk.git
-      revision: zmkx-rel-20231018
+      url: https://github.com/zmkfirmware/zmk.git
+      revision: main
       import: app/west.yml
   self:
     path: config
