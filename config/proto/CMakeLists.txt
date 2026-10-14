@@ -5,6 +5,7 @@ zephyr_library_named(hw75_proto)
 
 if(CONFIG_HW75_PROTO)
 
+set(CMAKE_C_STANDARD 11)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${ZEPHYR_NANOPB_MODULE_DIR}/extra)
 find_package(Nanopb REQUIRED)
 
