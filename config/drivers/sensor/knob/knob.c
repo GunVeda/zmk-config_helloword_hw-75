@@ -21,6 +21,7 @@ LOG_MODULE_REGISTER(knob, CONFIG_ZMK_LOG_LEVEL);
 struct knob_data {
 	int32_t delta;
 
+	const struct device *dev;
 	sensor_trigger_handler_t handler;
 	const struct sensor_trigger *trigger;
 
@@ -182,10 +183,9 @@ float knob_get_velocity(const struct device *dev)
 static void knob_report_work_handler(struct k_work *work)
 {
 	struct knob_data *data = CONTAINER_OF(work, struct knob_data, report_work);
-	const struct device *dev = CONTAINER_OF(data, struct device, data);
 
 	if (data->handler != NULL) {
-		data->handler(dev, data->trigger);
+		data->handler(data->dev, data->trigger);
 	}
 }
 
@@ -250,6 +250,7 @@ int knob_init(const struct device *dev)
 		return -ENODEV;
 	}
 
+	data->dev = dev;
 	data->mc = motor_get_control(config->motor);
 
 	data->params.ppr = data->encoder_ppr;
