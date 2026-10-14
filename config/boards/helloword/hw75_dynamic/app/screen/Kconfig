@@ -3,7 +3,7 @@
 
 config ZMK_DISPLAY_STATUS_SCREEN_CUSTOM
 	select LV_USE_LABEL
-	select LV_USE_BTN
+	select LV_USE_BUTTON
 	select LV_USE_LIST
 	select LV_USE_FLEX
 	select LV_USE_PAGE
