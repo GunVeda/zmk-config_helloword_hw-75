@@ -62,7 +62,13 @@ jobs:
           west update
           west zephyr-export
           pip install --break-system-packages -r zephyr/scripts/requirements.txt
-          pip install --break-system-packages 'protobuf>=4.21,<5.0'
+          # nanopb 0.4.6-zephyr generates a nanopb_pb2.py that imports
+          # google.protobuf.runtime_version, which only exists in protobuf
+          # 5.x. The previous pin (>=4.21,<5.0) was too old and broke the
+          # nanopb code generation step with
+          #   Failed to import nanopb_pb2.py: cannot import name
+          #   'runtime_version' from 'google.protobuf'.
+          pip install --break-system-packages 'protobuf>=5.27,<6.0'
           git config --global --add safe.directory $PWD
 
       - name: West build
