@@ -5,10 +5,12 @@
 
 #include <stdint.h>
 #include <string.h>
+#include <stddef.h>
 
 #include <zephyr/device.h>
 #include <zephyr/kernel.h>
 #include <zephyr/sys/util.h>
+#include <zephyr/sys/slist.h>
 
 #include <zephyr/logging/log.h>
 LOG_MODULE_DECLARE(lamparray, CONFIG_HW75_LAMPARRAY_LOG_LEVEL);
@@ -19,6 +21,50 @@ LOG_MODULE_DECLARE(lamparray, CONFIG_HW75_LAMPARRAY_LOG_LEVEL);
 #include "lamparray.h"
 #include "lamparray_descriptor.h"
 #include "lamparray_reports.h"
+
+/*
+ * HACK: directly append HID_2 to the HID class driver's lookup list.
+ *
+ * The pcapng (usb-new-2.pcapng) showed that usb_get_dev_data_by_iface()
+ * returns NULL for bInterfaceNumber=2 at host enumeration time, even
+ * though the user's lamparray_hid_init calls usb_hid_register_device().
+ * MI_00 and MI_01 work on retry (their init functions land in the list
+ * during the host's retry window), but MI_02 never does — so the
+ * lookup stays NULL and hid_custom_handle_req returns -EINVAL,
+ * which makes the device STALL GET_DESCRIPTOR HID_REPORT for MI_02
+ * and Windows shows CM_PROB_FAILED_START.
+ *
+ * The function usb_hid_register_device() in
+ * subsys/usb/device/class/hid/core.c is what normally populates
+ * usb_hid_devlist. We can't force a different SYS_INIT priority
+ * that races correctly (POST_KERNEL/1 bricked the device, APPLICATION
+ * races the host's enumeration). So instead, reach in and append the
+ * entry directly. The list is a `static sys_slist_t` inside the HID
+ * class driver, but its symbol is exported by the linker.
+ */
+extern sys_slist_t usb_hid_devlist;
+
+/*
+ * Mirror of struct hid_device_info from
+ * subsys/usb/device/class/hid/core.c, with the conditional fields
+ * (SOF bookkeeping, boot protocol protocol byte) omitted because
+ * neither CONFIG_USB_DEVICE_SOF nor CONFIG_USB_HID_BOOT_PROTOCOL
+ * is set in this build (we can confirm this from the pcapng: SET_IDLE
+ * STALLs on every interface, which is the !SOF behavior). The layout
+ * up to and including `common` is the same.
+ *
+ * We only touch report_desc, report_size, ops, and `common` (node +
+ * dev), which is the same set usb_hid_register_device() writes.
+ */
+struct fake_hid_device_info {
+	const uint8_t *report_desc;
+	size_t report_size;
+	const struct hid_ops *ops;
+	bool configured;
+	bool suspended;
+	uint8_t _pad[2];
+	struct usb_dev_data common;
+};
 
 static const struct device *hid_dev;
 
@@ -178,8 +224,23 @@ static int lamparray_hid_init(const struct device *dev)
 		hid_dev->name, if_desc->bInterfaceNumber,
 		sizeof(hw75_lamparray_report_desc), cfg);
 
-	usb_hid_register_device(hid_dev, hw75_lamparray_report_desc,
-				sizeof(hw75_lamparray_report_desc), &ops);
+	/*
+	 * Direct-list-append (HACK) — see the comment at the top of this
+	 * file. Functionally equivalent to usb_hid_register_device():
+	 * set the same fields and append to the same list, just without
+	 * going through the public API. The struct layout is matched by
+	 * struct fake_hid_device_info above. If the lookup for
+	 * bInterfaceNumber=2 still fails after this, the issue is not
+	 * the registration call but something else (the field offsets,
+	 * a different list, or a different code path the host takes).
+	 */
+	struct fake_hid_device_info *dev_data = hid_dev->data;
+
+	dev_data->report_desc = hw75_lamparray_report_desc;
+	dev_data->report_size = sizeof(hw75_lamparray_report_desc);
+	dev_data->ops = &ops;
+	dev_data->common.dev = hid_dev;
+	sys_slist_append(&usb_hid_devlist, &dev_data->common.node);
 
 	return usb_hid_init(hid_dev);
 }
