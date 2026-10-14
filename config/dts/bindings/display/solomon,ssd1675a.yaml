@@ -15,7 +15,9 @@ description: Solomon SSD16XX EPD display controller (legacy SPI binding)
 
 compatible: "solomon,ssd1675a"
 
-include: spi-device.yaml, display-controller.yaml
+include:
+  - spi-device.yaml
+  - display-controller.yaml
 
 properties:
   reset-gpios:
