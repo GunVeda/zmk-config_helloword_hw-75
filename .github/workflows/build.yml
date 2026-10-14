@@ -107,7 +107,10 @@ jobs:
       - name: Archive
         uses: actions/upload-artifact@v7.0.1
         with:
-          name: firmware-${{ matrix.board }}${{ matrix.lamparray == 'true' && '-lamparray' || '' }}
+          # Slug board name + lamparray flag; @ and / are not allowed
+          # in artifact names (NTFS limit), and a single artifact is
+          # uploaded per matrix entry, so a flat slug is enough.
+          name: firmware-${{ matrix.board | replace('/', '_') | replace('@', '-') }}${{ matrix.lamparray == 'true' && '-lamparray' || '' }}
           path: build/artifacts
 
   release:
