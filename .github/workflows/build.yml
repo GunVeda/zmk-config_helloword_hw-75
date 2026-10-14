@@ -91,8 +91,9 @@ jobs:
             LAMPA_SUFFIX="-lamparray"
           fi
           mkdir build/artifacts
-          # Strip the "//zmk" qualifier from the board name and use it as
-          # the artifact file name; the prior version embedded the full
+          # Replace '/' and '@' (both forbidden in NTFS-style paths) in
+          # the board name with '_' and '-' so the result is safe to use
+          # as a flat file name; the prior version embedded the full
           # board name (with embedded slashes) as a directory, which cp
           # then refused to create.
           BOARD_SLUG=$(echo "${{ matrix.board }}" | tr '/@' '_-')
@@ -104,13 +105,25 @@ jobs:
           fi
           cp build/zephyr/zmk.bin "build/artifacts/${BOARD_SLUG}${LAMPA_SUFFIX}-zmk.bin"
 
-      - name: Archive
-        uses: actions/upload-artifact@v7.0.1
-        with:
+      - name: Compute artifact name
+        id: slug
+        run: |
           # Slug board name + lamparray flag; @ and / are not allowed
           # in artifact names (NTFS limit), and a single artifact is
           # uploaded per matrix entry, so a flat slug is enough.
-          name: firmware-${{ matrix.board | replace('/', '_') | replace('@', '-') }}${{ matrix.lamparray == 'true' && '-lamparray' || '' }}
+          # Same tr mapping as the Rename step above, so the artifact
+          # name echoes the file names inside the uploaded archive.
+          BOARD_SLUG=$(echo "${{ matrix.board }}" | tr '/@' '_-')
+          LAMPA_SUFFIX=""
+          if [ "${{ matrix.lamparray }}" = "true" ]; then
+            LAMPA_SUFFIX="-lamparray"
+          fi
+          echo "name=firmware-${BOARD_SLUG}${LAMPA_SUFFIX}" >> "$GITHUB_OUTPUT"
+
+      - name: Archive
+        uses: actions/upload-artifact@v7.0.1
+        with:
+          name: ${{ steps.slug.outputs.name }}
           path: build/artifacts
 
   release:
