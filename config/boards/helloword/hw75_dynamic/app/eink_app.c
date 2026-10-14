@@ -52,9 +52,9 @@ int eink_update_region(const uint8_t *image, uint32_t image_len, uint32_t x, uin
 
 	LOG_DBG("Start updating E-Ink");
 
-	ZMK_EVENT_RAISE(new_app_eink_state_changed((struct app_eink_state_changed){
+	raise_app_eink_state_changed((struct app_eink_state_changed){
 		.busy = true,
-	}));
+	});
 
 	if (!partial) {
 		display_blanking_on(eink);
@@ -70,9 +70,9 @@ int eink_update_region(const uint8_t *image, uint32_t image_len, uint32_t x, uin
 		display_blanking_off(eink);
 	}
 
-	ZMK_EVENT_RAISE(new_app_eink_state_changed((struct app_eink_state_changed){
+	raise_app_eink_state_changed((struct app_eink_state_changed){
 		.busy = false,
-	}));
+	});
 
 	LOG_DBG("E-Ink update finished");
 

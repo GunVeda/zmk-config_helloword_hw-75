@@ -87,29 +87,29 @@ static void knob_app_apply_pref(uint8_t layer_id);
 
 static void knob_app_calibrate(struct k_work *work)
 {
-	ZMK_EVENT_RAISE(new_app_knob_state_changed((struct app_knob_state_changed){
+	raise_app_knob_state_changed((struct app_knob_state_changed){
 		.enable = false,
 		.demo = false,
 		.calibration = KNOB_CALIBRATING,
-	}));
+	});
 
 	int ret = motor_calibrate_auto(motor);
 	if (ret == 0) {
 		knob_app_apply_pref(zmk_keymap_highest_layer_active());
 
-		ZMK_EVENT_RAISE(new_app_knob_state_changed((struct app_knob_state_changed){
+		raise_app_knob_state_changed((struct app_knob_state_changed){
 			.enable = true,
 			.demo = false,
 			.calibration = KNOB_CALIBRATE_OK,
-		}));
+		});
 	} else {
 		LOG_ERR("Motor is not calibrated");
 
-		ZMK_EVENT_RAISE(new_app_knob_state_changed((struct app_knob_state_changed){
+		raise_app_knob_state_changed((struct app_knob_state_changed){
 			.enable = false,
 			.demo = false,
 			.calibration = KNOB_CALIBRATE_FAILED,
-		}));
+		});
 	}
 }
 
@@ -138,11 +138,11 @@ void knob_app_set_demo(bool demo)
 		knob_app_enable_report_delayed();
 	}
 
-	ZMK_EVENT_RAISE(new_app_knob_state_changed((struct app_knob_state_changed){
+	raise_app_knob_state_changed((struct app_knob_state_changed){
 		.enable = true,
 		.demo = demo,
 		.calibration = KNOB_CALIBRATE_OK,
-	}));
+	});
 }
 
 #ifdef CONFIG_SETTINGS
@@ -295,11 +295,11 @@ static int knob_app_event_listener(const zmk_event_t *eh)
 
 		knob_set_enable(knob, active);
 
-		ZMK_EVENT_RAISE(new_app_knob_state_changed((struct app_knob_state_changed){
+		raise_app_knob_state_changed((struct app_knob_state_changed){
 			.enable = active,
 			.demo = false,
 			.calibration = KNOB_CALIBRATE_OK,
-		}));
+		});
 
 		return 0;
 	} else if (as_zmk_layer_state_changed(eh)) {
