@@ -7,6 +7,7 @@
 #include "lamparray_reports.h"
 
 #include <stdint.h>
+#include <stddef.h>
 #include <string.h>
 
 #include <zephyr/kernel.h>
@@ -60,13 +61,6 @@ static void mode_apply_fn(struct k_work *w)
 {
 	if (atomic_get(&slave_mode)) {
 		LOG_INF("lamparray: entering slave mode (host takes control)");
-		/*
-		 * Late-register the LampArray HID device with the Zephyr USB
-		 * HID class driver. See lamparray_hid.c::lamparray_hid_register_late
-		 * for the rationale (avoid the SYS_INIT vs. USB enumeration
-		 * race that the Wireshark capture revealed for MI_02).
-		 */
-		lamparray_hid_register_late();
 		zmk_rgb_underglow_off();
 #ifdef CONFIG_HW75_INDICATOR
 		indicator_set_enable(false);
@@ -205,10 +199,8 @@ static int lamparray_init(const struct device *dev)
 
 #ifdef CONFIG_HW75_LAMPARRAY_AUTONOMOUS_ON_BOOT
 	atomic_set(&slave_mode, 0);
-	lamparray_enter_autonomous();
 #else
 	atomic_set(&slave_mode, 1);
-	lamparray_enter_slave();
 #endif
 
 	LOG_INF("lamparray: initialized, %d lamps, mode=%s", HW75_LAMPARRAY_LAMP_COUNT,
