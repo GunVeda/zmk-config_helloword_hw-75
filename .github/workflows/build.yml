@@ -91,13 +91,18 @@ jobs:
             LAMPA_SUFFIX="-lamparray"
           fi
           mkdir build/artifacts
+          # Strip the "//zmk" qualifier from the board name and use it as
+          # the artifact file name; the prior version embedded the full
+          # board name (with embedded slashes) as a directory, which cp
+          # then refused to create.
+          BOARD_SLUG=$(echo "${{ matrix.board }}" | tr '/@' '_-')
           if [ -f build/zephyr/zmk.uf2 ]; then
-            cp build/zephyr/zmk.uf2 "build/artifacts/${{ matrix.board }}${LAMPA_SUFFIX}-zmk.uf2"
+            cp build/zephyr/zmk.uf2 "build/artifacts/${BOARD_SLUG}${LAMPA_SUFFIX}-zmk.uf2"
           fi
           if [ -f build/zephyr/zmk.hex ]; then
-            cp build/zephyr/zmk.hex "build/artifacts/${{ matrix.board }}${LAMPA_SUFFIX}-zmk.hex"
+            cp build/zephyr/zmk.hex "build/artifacts/${BOARD_SLUG}${LAMPA_SUFFIX}-zmk.hex"
           fi
-          cp build/zephyr/zmk.bin "build/artifacts/${{ matrix.board }}${LAMPA_SUFFIX}-zmk.bin"
+          cp build/zephyr/zmk.bin "build/artifacts/${BOARD_SLUG}${LAMPA_SUFFIX}-zmk.bin"
 
       - name: Archive
         uses: actions/upload-artifact@v7.0.1
