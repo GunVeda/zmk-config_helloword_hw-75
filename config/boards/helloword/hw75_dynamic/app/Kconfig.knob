@@ -1,8 +1,8 @@
 # Copyright (c) 2023 XiNGRZ
 # SPDX-License-Identifier: MIT
 
-DT_ALIAS_KNOB := knob
-
 config HW75_KNOB
-	bool
-	default $(dt_alias_enabled,$(DT_ALIAS_KNOB))
+	bool "HW-75 knob application"
+	default y
+	help
+	  Enable the HW-75 knob preference/demo companion application.
