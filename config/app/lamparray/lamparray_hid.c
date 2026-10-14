@@ -169,10 +169,7 @@ static int lamparray_hid_init(const struct device *dev)
 	}
 
 	/* Diagnose: report which HID instance we got, plus its runtime
-	 * bInterfaceNumber as the Zephyr USB device stack sees it. This tells
-	 * us whether (a) the SYS_INIT order placed us after usb_comm/ZMK
-	 * keyboard and (b) whether the descriptor fixup step assigned the
-	 * bInterfaceNumber we expect.
+	 * bInterfaceNumber as the Zephyr USB device stack sees it.
 	 */
 	const struct usb_cfg_data *cfg = hid_dev->config;
 	const struct usb_if_descriptor *if_desc = cfg->interface_descriptor;
@@ -181,51 +178,28 @@ static int lamparray_hid_init(const struct device *dev)
 		hid_dev->name, if_desc->bInterfaceNumber,
 		sizeof(hw75_lamparray_report_desc), cfg);
 
-	/*
-	 * usb_hid_init() updates the HID descriptor's wReportDescriptorLength
-	 * so the Configuration Descriptor sent during enumeration reports the
-	 * correct size. This MUST happen before the host reads the
-	 * Configuration Descriptor or it will see length=0 for MI_02 and the
-	 * lookup later will mismatch.
-	 */
+	usb_hid_register_device(hid_dev, hw75_lamparray_report_desc,
+				sizeof(hw75_lamparray_report_desc), &ops);
+
 	return usb_hid_init(hid_dev);
 }
 
-SYS_INIT(lamparray_hid_init, APPLICATION, CONFIG_APPLICATION_INIT_PRIORITY);
-
-/* Track whether usb_hid_register_device has already been called for HID_2
- * so repeated mode flips don't pile duplicate entries onto usb_hid_devlist.
+/*
+ * POST_KERNEL priority 1 — strictly LATER than the HID class driver's
+ * DEVICE_DEFINE(..., POST_KERNEL, CONFIG_KERNEL_INIT_PRIORITY_DEFAULT).
+ * Both priorities are POST_KERNEL, but the HID class devices are at
+ * prio 0 and ours is at prio 1, so this init runs after every HID
+ * instance struct is created and `device_get_binding("HID_2")` is
+ * guaranteed non-NULL.
+ *
+ * Critically, this still runs BEFORE ZMK's APPLICATION-priority
+ * zmk_usb_hid_init and before the init function that calls
+ * usb_enable(), so by the time the host issues its first
+ * GET_DESCRIPTOR HID_REPORT for MI_02, HID_2 is already in
+ * usb_hid_devlist. The previous APPLICATION-priority placement
+ * lost that race; the previous POST_KERNEL/0 placement had the
+ * inverse problem of running before the HID class device was even
+ * created (Configuration Descriptor then reported
+ * wReportDescriptorLength=0 for MI_02).
  */
-static atomic_t hid_registered;
-
-void lamparray_hid_register_late(void)
-{
-	if (atomic_set(&hid_registered, 1) != 0) {
-		/* Already registered; nothing to do. */
-		return;
-	}
-
-	if (hid_dev == NULL) {
-		LOG_WRN("lamparray: late-register called before hid_dev was bound");
-		atomic_set(&hid_registered, 0);
-		return;
-	}
-
-	/*
-	 * Register HID_2 with the Zephyr USB HID class driver. This is done
-	 * here — on the low-priority work queue via lamparray_enter_slave /
-	 * mode_apply_fn — instead of in lamparray_hid_init because the
-	 * pcapng shows the lookup via usb_get_dev_data_by_iface() returns
-	 * NULL for the LampArray interface during the very first
-	 * GET_DESCRIPTOR HID_REPORT for MI_02, while the other two HID
-	 * interfaces (keyboard, usb_comm) succeed on the host's retry. The
-	 * race is that HID_2's SYS_INIT lands AFTER the host has already
-	 * issued SET_CONFIGURATION and started enumerating interfaces, so
-	 * usb_hid_devlist is still empty for bInterfaceNumber=2 at lookup
-	 * time. Registering from a work item guarantees the append happens
-	 * after the race window.
-	 */
-	usb_hid_register_device(hid_dev, hw75_lamparray_report_desc,
-				sizeof(hw75_lamparray_report_desc), &ops);
-	LOG_INF("lamparray hid: late-registered with USB HID class driver");
-}
+SYS_INIT(lamparray_hid_init, POST_KERNEL, 1);
