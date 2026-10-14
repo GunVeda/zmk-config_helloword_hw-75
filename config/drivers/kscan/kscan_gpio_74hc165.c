@@ -226,7 +226,7 @@ static const struct kscan_driver_api kscan_74hc165_api = {
     };                                                                                             \
                                                                                                    \
     DEVICE_DT_INST_DEFINE(n, &kscan_74hc165_init, NULL, &kscan_74hc165_data_##n,                   \
-                          &kscan_74hc165_config_##n, APPLICATION,                                  \
-                          CONFIG_APPLICATION_INIT_PRIORITY, &kscan_74hc165_api);
+                          &kscan_74hc165_config_##n, POST_KERNEL,                                  \
+                          CONFIG_KERNEL_INIT_PRIORITY_DEFAULT, &kscan_74hc165_api);
 
 DT_INST_FOREACH_STATUS_OKAY(KSCAN_74HC165_INIT);

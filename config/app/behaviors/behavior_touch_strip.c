@@ -43,7 +43,7 @@ static int behavior_touch_strip_init(const struct device *dev)
 	return 0;
 };
 
-DEVICE_DT_INST_DEFINE(0, behavior_touch_strip_init, NULL, NULL, NULL, APPLICATION,
+DEVICE_DT_INST_DEFINE(0, behavior_touch_strip_init, NULL, NULL, NULL, POST_KERNEL,
 		      CONFIG_KERNEL_INIT_PRIORITY_DEFAULT, &behavior_touch_strip_driver_api);
 
 #endif /* DT_HAS_COMPAT_STATUS_OKAY(DT_DRV_COMPAT) */
