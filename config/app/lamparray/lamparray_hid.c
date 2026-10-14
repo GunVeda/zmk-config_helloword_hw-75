@@ -168,6 +168,19 @@ static int lamparray_hid_init(const struct device *dev)
 		return -ENODEV;
 	}
 
+	/* Diagnose: report which HID instance we got, plus its runtime
+	 * bInterfaceNumber as the Zephyr USB device stack sees it. This tells
+	 * us whether (a) the SYS_INIT order placed us after usb_comm/ZMK
+	 * keyboard (good — list is populated) and (b) whether the descriptor
+	 * fixup step assigned the bInterfaceNumber we expect.
+	 */
+	const struct usb_cfg_data *cfg = hid_dev->config;
+	const struct usb_if_descriptor *if_desc = cfg->interface_descriptor;
+	LOG_INF("lamparray hid: dev_name=%s bInterfaceNumber=%u "
+		"report_size=%u cfg=%p",
+		hid_dev->name, if_desc->bInterfaceNumber,
+		sizeof(hw75_lamparray_report_desc), cfg);
+
 	usb_hid_register_device(hid_dev, hw75_lamparray_report_desc,
 				sizeof(hw75_lamparray_report_desc), &ops);
 
