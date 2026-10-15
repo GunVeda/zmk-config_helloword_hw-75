@@ -84,12 +84,6 @@ jobs:
         env:
           PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION: python
 
-      - name: Verify USB init priority
-        if: always()
-        run: |
-          echo "=== USB init priorities ==="
-          grep -E "^CONFIG_(USB_HID_DEVICE_COUNT|ZMK_USB_INIT_PRIORITY|ZMK_USB_HID_INIT_PRIORITY|APPLICATION_INIT_PRIORITY)=" build/zephyr/.config
-
       - name: Rename artifacts
         run: |
           LAMPA_SUFFIX=""
