@@ -84,18 +84,6 @@ jobs:
         env:
           PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION: python
 
-      - name: Dump USB HID config
-        if: always()
-        run: |
-          echo "=== USB_HID_DEVICE_COUNT ==="
-          grep -E "^CONFIG_USB_HID_DEVICE_COUNT=" build/zephyr/.config || echo "NOT SET"
-          echo "=== USB device-related config ==="
-          grep -E "^CONFIG_(USB_HID|USB_DEVICE|USB_CDC_ACM|USBD)" build/zephyr/.config | head -40
-          echo "=== Defined HID devices in source ==="
-          grep -rn "HID_DEVICE_DEFINE\|usb_hid_devlist" build/modules/zephyr/subsys/usb/device/class/hid/ 2>/dev/null | head -10
-          echo "=== Final USB HID descriptor template ==="
-          ls build/zephyr/include/generated/ 2>/dev/null | head -20
-
       - name: Rename artifacts
         run: |
           LAMPA_SUFFIX=""
