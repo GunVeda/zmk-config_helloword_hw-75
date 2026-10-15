@@ -35,19 +35,19 @@ source "subsys/logging/Kconfig.template.log_config"
 
 endif # HW75_LAMPARRAY
 
-# HID interface count — REMOVED for ZMK main / Zephyr 4.1 migration.
-#
-# In Zephyr 3.2 (old subsys/usb/device/ stack) the legacy HID class driver
-# was driven by CONFIG_USB_HID_DEVICE_COUNT, an integer picked up by
-# LISTIFY(DEFINE_HID_DEVICE, ...). We branched on HW75_LAMPARRAY to land
-# the right count so the LampArray's HID_2/HID_3 device struct was created
-# and could be registered via usb_hid_register_device().
-#
-# In Zephyr 4.1 (subsys/usb/device_next/ stack) the new USBD_HID class
-# driver enumerates HID instances from devicetree nodes that bind
-# `zephyr,hid-device` (zephyr/dts/bindings/usb/hid.yaml). There is no
-# integer count to set — the count is the number of compatible nodes in
-# the devicetree. The new HW-75 .dts/.overlay will need a third
-# zephyr,hid-device node (for the LampArray) when we migrate. Until that
-# migration is in, this Kconfig is intentionally absent so the build
-# fails loudly rather than silently compiling against a no-op default.
+# Number of USB HID device instances the Zephyr HID class driver should
+# create. Defaults to 1 (just ZMK's HID_0), which is what the upstream
+# Kconfig ships with. Our keyboards need at least one extra slot for the
+# HW-75 HID mouse (HID_1) and, when LampArray is enabled, one more for
+# the LampArray interface (HID_2 for hw75_keyboard, HID_3 for hw75_dynamic
+# — see HW75_LAMPARRAY_DEVICE_NAME above). Without this override, the
+# mouse and LampArray SYS_INITs both call device_get_binding() against
+# non-existent devices, return -ENODEV, and the descriptors are never
+# registered with the USB stack. The host then sees the keyboard
+# enumerate but the auxiliary interfaces come up as Code 10.
+config USB_HID_DEVICE_COUNT
+	int "Number of USB HID devices (overrides Zephyr default of 1)"
+	default 4 if (BOARD_HW75_DYNAMIC && HW75_LAMPARRAY)
+	default 3 if (BOARD_HW75_KEYBOARD && HW75_LAMPARRAY)
+	default 3 if BOARD_HW75_DYNAMIC
+	default 2 if BOARD_HW75_KEYBOARD
