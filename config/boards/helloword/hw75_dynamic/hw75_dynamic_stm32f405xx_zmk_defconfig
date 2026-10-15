@@ -52,3 +52,9 @@ CONFIG_USB_DEVICE_MANUFACTURER="HelloWord"
 CONFIG_USB_DEVICE_PRODUCT="HW-75 Dynamic"
 CONFIG_HW75_HID_MOUSE=y
 CONFIG_HW75_HID_MOUSE_DEVICE_NAME="HID_2"
+# Run usb_enable AFTER zmk_usb_hid_init (default priority 95) so HID_0's
+# wDescriptorLength is stamped into the static HID class descriptor before
+# the host can read the Configuration Descriptor. Otherwise the host
+# sees wDescriptorLength=0 for the keyboard interface, fails to fetch the
+# HID report descriptor, and the device fails to enumerate.
+CONFIG_ZMK_USB_INIT_PRIORITY=96
